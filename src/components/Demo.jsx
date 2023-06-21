@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { linkIcon } from '../assets'
+import { copy, linkIcon, loader, tick } from '../assets'
 
 import { useLazyGetSummaryQuery } from '../services/article'
 
 
 
 const Demo = () => {
-  const [article, setArticle] = useState({url: '', summery: '',})
+  const [article, setArticle] = useState({url: '', summary: '',})
 
   const [allArticles, setAllArticles] = useState([])
+  const [copied, setCopied] = useState("")
 
 // const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
@@ -36,6 +37,12 @@ useEffect(() => {
 
       console.log('newArticle', newArticle)
     }
+  }
+
+  const handleCopy = (copyUrl) => {
+    setCopied(copyUrl)
+    navigator.clipboard.writeText(copyUrl)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -72,7 +79,18 @@ useEffect(() => {
             <div
               key={`link-${index}`}
               onClick={() => setArticle(item)}
+              className="link_card"
             >
+              <div className='copy_btn' onClick={() => handleCopy(item.url)} >
+                <img 
+                  src={copied === item.url ? tick : copy} 
+                  alt='copy_icon' 
+                  className='w-[40%] h-[40%] object-contain ' />
+
+              </div>
+              <p className='flex-1 font-satoshi text-bluw-700 font-medium text-sm truncate'>
+                {item.url}
+              </p>
 
             </div>
           ))}
@@ -80,6 +98,34 @@ useEffect(() => {
         </div>
       </div>
       {/* Display Results */}
+      <div>
+        {isFetching ? (
+          <img src={loader} alt='loader' className='w-20 h-20 text-black text-center animate-spin' />
+        ) : error ? (
+      <p className="font-inter font-bold text-black text-center">
+        Well, that was not supposed to happen. Please try again.
+        <br />
+        <span className="font--satoshi font-normal text-gray-700">
+          {error?.data?.error}
+        </span>
+      </p>
+        ) : (
+          article.summary && (
+            <div className='flex flex-col gap-3'>
+              <h2 className='font-satoshi font-bold text-gray-600 text-xl'>
+                Article <span className='blue-gradient'>Summary</span>
+              </h2>
+              <div className='summary_box'>
+                <p
+                className='font-inter font-medium text-gray-700 text-sm'
+                >
+                  {article.summary}</p>
+              </div>
+            </div>
+
+          )
+        )}
+      </div>
     </section>
     </>
   )
