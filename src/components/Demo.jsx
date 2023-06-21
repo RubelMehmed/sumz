@@ -1,13 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { linkIcon } from '../assets'
 
 import { useLazyGetSummaryQuery } from '../services/article'
 
+
+
 const Demo = () => {
   const [article, setArticle] = useState({url: '', summery: '',})
 
+  const [allArticles, setAllArticles] = useState([])
+
 // const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
+
+useEffect(() => {
+  const articlesFromLocalStorage = JSON.parse(localStorage.getItem('articles'))
+  if (articlesFromLocalStorage) {
+    setAllArticles(articlesFromLocalStorage)
+  }
+
+}, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -15,7 +27,12 @@ const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
     const { data } = await getSummary({ articleUrl: article.url})
     if(data?.summary) {
       const newArticle = { ...article, summary:data.summary}
+
+      const updatedAllArticles = [newArticle, ...allArticles]
       setArticle(newArticle)
+      setAllArticles(updatedAllArticles)
+
+      localStorage.setItem('articles', JSON.stringify(updatedAllArticles))
 
       console.log('newArticle', newArticle)
     }
@@ -50,6 +67,17 @@ const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
           </button>
         </form>
         {/* Browse URL Hoistory */}
+        <div className='flex flex-col gap-1 max-h-60 overflow-y-auto'>
+          {allArticles.map((item, index) => (
+            <div
+              key={`link-${index}`}
+              onClick={() => setArticle(item)}
+            >
+
+            </div>
+          ))}
+        
+        </div>
       </div>
       {/* Display Results */}
     </section>
