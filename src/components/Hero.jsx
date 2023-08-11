@@ -1,5 +1,3 @@
-import React from "react";
-
 import { logo } from "../assets";
 
 const Hero = () => {
@@ -16,6 +14,24 @@ const Hero = () => {
           className='black_btn'
         >
           GitHub
+        </button>
+        <button
+          type='button'
+          onClick={() =>
+            window.open("https://facebook.com/rubelmehmed.pro", "_blank")
+          }
+          className='black_btn'
+        >
+          Facebook
+        </button>
+        <button
+          type='button'
+          onClick={() =>
+            window.open("https://twitter.com/rubelmehmed", "_blank")
+          }
+          className='black_btn'
+        >
+          Twitter
         </button>
       </nav>
 
