@@ -1,4 +1,3 @@
-import React from 'react'
 
 import Demo from './components/Demo'
 import Hero from './components/Hero'
@@ -10,6 +9,7 @@ const App = () => {
     <main>
       <div className='main'>
         <div className='gradient' />
+        
 
       </div>
       <div className='app'>
